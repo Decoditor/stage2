@@ -58,7 +58,7 @@ export default function Select({
 
       {/* DROPDOWN */}
       {open && (
-        <div className="mt-2 rounded-lg shadow-lg absolute top-full left-0 w-full bg-white overflow-hidden">
+        <div className="mt-2 rounded-lg shadow-lg absolute top-full left-0 w-full bg-bg overflow-hidden">
           {options.map((opt, index) => {
             const isActive = opt.value === value;
 

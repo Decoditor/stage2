@@ -1,13 +1,16 @@
-import { Outlet } from "react-router";
+import { Outlet } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import { INVOICES } from "./datas";
 import InvoiceContext from "./contexts/InvoiceContext";
 import { useState, useEffect } from "react";
+import type { Invoice } from "@/home/InvoiceCard";
 
 const STORAGE_KEY = "invoices";
 
 export default function App() {
-  const [invoices, setInvoices] = useState(() => {
+  const [invoices, setInvoices] = useState<Invoice[]>(() => {
+    if (typeof window === "undefined") return INVOICES;
+
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       return stored ? JSON.parse(stored) : INVOICES;
@@ -17,11 +20,7 @@ export default function App() {
   });
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(invoices));
-    } catch (err) {
-      console.error("Failed to save invoices", err);
-    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(invoices));
   }, [invoices]);
 
   return (

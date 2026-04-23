@@ -106,7 +106,7 @@ export default function InvoiceDetails() {
   const { id } = useParams();
   const invoice = invoices.find((item) => item.id === id);
   const handleDelete = () => {
-    const remaining = invoices.filter((item) => item.id !== invoice.id);
+    const remaining = invoices.filter((item) => item.id !== invoice?.id);
     setInvoices(remaining);
     console.log(remaining);
     navigate("/");
@@ -116,10 +116,16 @@ export default function InvoiceDetails() {
       prev.map((item) => (item.id === id ? { ...item, status: "paid" } : item)),
     );
   }
-  const itemTotal = invoice.items.reduce((acc, item) => {
-    return +item.quantity * +item.price + acc;
-  }, 0);
+  const itemTotal =
+    invoice?.items.reduce((acc, item) => {
+      return +item.quantity * +item.price + acc;
+    }, 0) || 0;
 
+  if (!invoice) {
+    return (
+      <div className="p-6 text-center text-text-muted">Invoice not found</div>
+    );
+  }
   return (
     <div className="">
       <main className=" space-y-6 pt-24 lg:pt-12 px-6 md:px-12 lg:max-w-195 lg:mx-auto py-18">
@@ -313,6 +319,7 @@ export default function InvoiceDetails() {
               variant="secondary"
               size="lg"
               className="rounded-full font-bold"
+              onClick={() => setShowEdit(true)}
             >
               Edit
             </Button>

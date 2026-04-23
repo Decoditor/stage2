@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { FiChevronLeft } from "react-icons/fi";
 import useInvoiceContext from "@/hooks/useContext";
 import { invoiceSchema } from "@/lib/InvoiceSchema";
-import type z from "zod";
+import { z } from "zod";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
@@ -49,9 +49,19 @@ export default function InvoiceDrawer({ open, onOpenChange, invoice }: Props) {
     const newId = crypto.randomUUID();
     const paymentDue = addDays(data.createdAt, Number(data.paymentTerms));
 
+    // normalize items (THIS FIXES YOUR ERROR)
+    const normalizedItems = data.items.map((item) => ({
+      ...item,
+      total: item.price * item.quantity,
+    }));
+
+    const total = normalizedItems.reduce((sum, item) => sum + item.total, 0);
+
     const finalData = {
       ...data,
+      items: normalizedItems,
       paymentDue,
+      total,
     };
 
     if (invoice) {
@@ -71,7 +81,6 @@ export default function InvoiceDrawer({ open, onOpenChange, invoice }: Props) {
       ]);
     }
 
-    console.log(data);
     close();
   }
 
